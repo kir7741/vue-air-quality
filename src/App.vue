@@ -1,19 +1,32 @@
 <template>
   <div id="app">
     <AirQuality/>
-    <LoadingView/>
+    <LoadingView v-if="loading"/>
   </div>
 </template>
 
 <script>
 import AirQuality from './components/AirQuality.vue';
 import LoadingView from './components/LoadingView';
+import store from './store.js';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
+  store,
   name: 'app',
   components: {
     AirQuality,
     LoadingView
+  },
+  computed: {
+    ...mapState(['loading'])
+  },
+  methods: {
+    ...mapMutations({
+      showLoading: 'toggleLoading'
+    })
+  },
+  mounted() {
   }
 }
 </script>
