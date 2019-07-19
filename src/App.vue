@@ -6,10 +6,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import store from './store.js';
+
+// Components
 import AirQuality from './components/AirQuality.vue';
 import LoadingView from './components/LoadingView';
-import store from './store.js';
-import { mapState, mapMutations } from 'vuex';
 
 export default {
   store,
@@ -20,13 +22,6 @@ export default {
   },
   computed: {
     ...mapState(['loading'])
-  },
-  methods: {
-    ...mapMutations({
-      showLoading: 'toggleLoading'
-    })
-  },
-  mounted() {
   }
 }
 </script>

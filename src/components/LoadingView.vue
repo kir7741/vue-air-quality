@@ -28,7 +28,7 @@ export default {
   right: 0;
   top: 0;
   bottom: 0;
-  background:rgba(0, 0, 0, 0.6);
+  background:rgba(0, 0, 0, 0.2);
 }
 .loading {
   border: 5px solid $primaryBlack;
