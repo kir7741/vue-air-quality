@@ -14,6 +14,13 @@
               >
                 請選澤地區
               </option>
+              <option 
+                v-for="(country, index) in countrySelects"
+                :key="index"
+                :value="country"
+              >
+                {{ country }}
+              </option>
             </select>
           </div>
         </div>
@@ -21,22 +28,22 @@
           <table class="table-bordered">
             <thead>
               <tr>
-                <th>0~50</th>
-                <th>51~100</th>
-                <th>101~150</th>
-                <th>151~200</th>
-                <th>201~300</th>
-                <th>301~400</th>
+                <th  
+                  v-for="(item, index) in statusList"
+                  :key="index"
+                >
+                  {{ item.lowerLimit }}~{{ item.upperLimit }}
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>良好</td>
-                <td>普通</td>
-                <td>對敏感族群不健康</td>
-                <td>對所有族群不健康</td>
-                <td>非常不健康</td>
-                <td>危害</td>
+                <td 
+                  v-for="(item, index) in statusList"
+                  :key="index"
+                >
+                  {{ item.status }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -84,10 +91,51 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'AirQuality',
+  data() {
+    return {
+      statusList: [
+        {
+          lowerLimit: 0,
+          upperLimit: 50,
+          status: '良好'
+        },
+        {
+          lowerLimit: 51,
+          upperLimit: 100,
+          status: '普通'
+        },
+        {
+          lowerLimit: 101,
+          upperLimit: 150,
+          status: '對敏感族群不健康'
+        },
+        {
+          lowerLimit: 151,
+          upperLimit: 200,
+          status: '對所有族群不健康'
+        },
+        {
+          lowerLimit: 201,
+          upperLimit: 300,
+          status: '非常不健康'
+        },
+        {
+          lowerLimit: 301,
+          upperLimit: 400,
+          status: '危害'
+        }
+      ]
+    }
+  },
+  computed: {
+    ...mapGetters({
+      countrySelects: 'getSelects'
+    })
+  },
   methods: {
     ...mapActions({
       getData: 'getAQIData'
@@ -192,14 +240,6 @@ export default {
     left: 0;
     right: 0;
     border: 1px dashed $primaryBlack;
-  }
-}
-.site {
-  div:first-child {
-
-  }
-  div:last-child {
-
   }
 }
 .combination {
