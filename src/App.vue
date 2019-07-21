@@ -41,4 +41,28 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+[class*="col-"] {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.col-4, .col-8 {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+@media all and (min-width: 767px) {
+  .col-4 {
+    flex: 0 0 33.33333%;
+    max-width: 33.33333%;
+  }
+  .col-8 {
+    flex: 0 0 66.66666%; 
+    max-width: 66.66666;
+  }
+}
 </style>
