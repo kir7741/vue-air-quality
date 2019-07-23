@@ -10,21 +10,21 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     loading: false,
-    statusList: []
+    aqiList: []
   },
   mutations: {
     toggleLoading(state, payload) {
       state.loading = payload;
     },
-    setStatusList(state, payload) {
-      state.statusList = payload;
+    setAqiList(state, payload) {
+      state.aqiList = payload;
     }
   },
   getters: {
     getSelects(state) {
 
       return state
-              .statusList
+              .aqiList
               .map(status => status.County)
               .filter((ele, index, self) => {
                 return index == self.indexOf(ele);
@@ -34,29 +34,39 @@ const store = new Vuex.Store({
   },
   actions: {
     getAQIData(context) {
+
       context.commit('toggleLoading', true);
+
       const url = `${process.env.VUE_APP_AQI_URL}/webapi/Data/REWIQA/?format=json`;
-      axios
-        .get(url)
-        .then((res) => {
-          context.commit('toggleLoading', false);
 
-          const datas = res.data || [];
-          let statusList = [];
+      return new Promise((resolve, reject) => {
 
-          if (
-            datas &&
-            Array.isArray(datas)
-          ) {
-            statusList = datas.map(data => new Aqi(data));
-            context.commit('setStatusList', statusList);
-          }
-          
-        })
-        .catch((error) => {
-          context.commit('toggleLoading', false);
-          console.log(error);
-        })
+        axios
+          .get(url)
+          .then((res) => {
+            context.commit('toggleLoading', false);
+
+            const datas = res.data || [];
+            let aqiList = [];
+
+            if (
+              datas &&
+              Array.isArray(datas)
+            ) {
+              aqiList = datas.map(data => new Aqi(data));
+              context.commit('setAqiList', aqiList);
+            }
+
+            resolve(aqiList);
+            
+          })
+          .catch((error) => {
+            context.commit('toggleLoading', false);
+            reject(error);
+          })
+
+      });
+
     }
   }
 });

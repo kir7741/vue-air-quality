@@ -7,19 +7,22 @@
         <div>
           <p>空氣品質指標(AQI)</p>
           <div class="custom-select">
-            <select>
+            <select 
+              v-model="city"
+              @change="queryByCity($event)"
+            >
               <option 
                 disabled
-                :value="null"
+                :value="''"
               >
                 請選澤地區
               </option>
               <option 
-                v-for="(country, index) in countrySelects"
+                v-for="(city, index) in citySelects"
                 :key="index"
-                :value="country"
+                :value="city"
               >
-                {{ country }}
+                {{ city }}
               </option>
             </select>
           </div>
@@ -52,21 +55,37 @@
       <!-- 上方標題區域結束 -->
 
       <!-- 當前縣市區域開始 -->
-      <section class="city">
-        <div>高雄市</div>
+      <section 
+        class="city"
+        v-if="selectedList.length"
+      >
+        <div>
+          {{ city }}
+        </div>
         <div class="dotted-line"></div>
-        <div>2019-01-24 14:00 更新</div>
+        <div>
+          {{ queryTime }} 更新
+        </div>
       </section>
       <!-- 當前縣市區域結束 -->
 
       <!-- 各區域指標數值開始 -->
-      <section class="site row">
-        <div class="col-4">
+      <section
+        class="site row"
+        v-if="selectedList.length"
+      >
+        <div class="col-4 mb-15">
           <div class="combination">
-            <span>前金</span>
-            <span>156</span>
+            <span>
+              {{ getFirstSite.SiteName }}
+            </span>
+            <span>
+              {{ getFirstSite.AQI  }}
+            </span>
           </div>
           <ul class="detail">
+
+            <!-- 臭氧項目開始 -->
             <li>
               <span class="item-name">
                 臭氧
@@ -75,13 +94,102 @@
                 O3 (ppb)
               </span>
               <span class="amount">
-                82
+                {{ getFirstSite.O3  }}
               </span>
             </li>
+            <!-- 臭氧項目結束 -->
+
+            <!-- 懸浮微粒項目開始 -->
+            <li>
+              <span class="item-name">
+                懸浮微粒
+              </span>
+              <span class="subtitle">
+                PM10 (μg/m³)
+              </span>
+              <span class="amount">
+                {{ getFirstSite.PM10  }}
+              </span>
+            </li>
+            <!-- 懸浮微粒項目結束 -->
+
+            <!-- 細懸浮微粒項目開始 -->
+            <li>
+              <span class="item-name">
+                細懸浮微粒
+              </span>
+              <span class="subtitle">
+                PM2.5 (μg/m³)
+              </span>
+              <span class="amount">
+                {{ getFirstSite.PM2dot5  }}
+              </span>
+            </li>
+            <!-- 細懸浮微粒項目結束 -->
+
+            <!-- 一氧化碳項目開始 -->
+            <li>
+              <span class="item-name">
+                一氧化碳
+              </span>
+              <span class="subtitle">
+                CO (ppm)
+              </span>
+              <span class="amount">
+                {{ getFirstSite.CO  }}
+              </span>
+            </li>
+            <!-- 一氧化碳項目結束 -->
+
+            <!-- 二氧化硫項目開始 -->
+            <li>
+              <span class="item-name">
+                二氧化硫
+              </span>
+              <span class="subtitle">
+                SO2 (ppb)
+              </span>
+              <span class="amount">
+                {{ getFirstSite.SO2  }}
+              </span>
+            </li>
+            <!-- 二氧化硫項目結束 -->
+
+            <!-- 二氧化氮項目開始 -->
+            <li>
+              <span class="item-name">
+                二氧化氮
+              </span>
+              <span class="subtitle">
+                NO2 (ppb)
+              </span>
+              <span class="amount">
+                {{ getFirstSite.NO2  }}
+              </span>
+            </li>
+            <!-- 二氧化氮項目開始 -->
+
           </ul>
         </div>
         <div class="col-8">
-          <div class="combination"></div>
+          <div class="row">
+
+            <div 
+              class="col-6 mb-15"
+              v-for="(aqi, index) in selectedList"
+              :key="index"
+            >
+              <div class="combination">
+                <span>
+                  {{ aqi.SiteName }}
+                </span>
+                <span>
+                  {{ aqi.AQI }}
+                </span>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
       <!-- 各區域指標數值結束 -->
@@ -93,10 +201,16 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 
+// Other libraries
+import * as moment from 'moment';
+
 export default {
   name: 'AirQuality',
   data() {
     return {
+      city: '',
+      queryTime: '',
+      selectedList: [],
       statusList: [
         {
           lowerLimit: 0,
@@ -132,17 +246,40 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      aqiList: 'aqiList'
+    }),
     ...mapGetters({
-      countrySelects: 'getSelects'
-    })
+      citySelects: 'getSelects'
+    }),
+    getFirstSite() {
+      return this.selectedList[0];
+    }
   },
   methods: {
     ...mapActions({
       getData: 'getAQIData'
-    })
+    }),
+    queryByCity(event) {
+
+      const val = event.target.value;
+
+      this.selectedList = this
+                            .aqiList
+                            .filter((aqi) => {
+                              return aqi.County === val;
+                            });
+
+    }
   },
   mounted() {
-    this.getData();
+
+    this
+      .getData()
+      .then(() => {
+        this.queryTime = moment().format('YYYY-MM-DD HH:mm');
+      })
+
   }
 }
 </script>
@@ -246,11 +383,12 @@ export default {
   display: flex;
   border: 3px solid $primaryBlack;
   & span:first-child {
+    flex: 1 1 55%;
     border-right: 3px solid $primaryBlack;
   }
   span {
-    flex: 1;
-    padding: 25px 20px;
+    flex: 1 1 45%;
+    padding: 20px 15px;
     font-size: 2rem;
     font-weight: bold;
     text-align: center;
@@ -278,6 +416,9 @@ export default {
     font-size: 1.7rem;
     font-weight: bold;
   }
+}
+.mb-15 {
+  margin-bottom: 15px;
 }
 @media all and (min-width: 767px) {
   .wrapper {

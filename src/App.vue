@@ -51,7 +51,7 @@ body {
   padding-right: 15px;
   padding-left: 15px;
 }
-.col-4, .col-8 {
+.col-4, .col-6, .col-8 {
   flex: 0 0 100%;
   max-width: 100%;
 }
@@ -59,6 +59,10 @@ body {
   .col-4 {
     flex: 0 0 33.33333%;
     max-width: 33.33333%;
+  }
+  .col-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
   }
   .col-8 {
     flex: 0 0 66.66666%; 
