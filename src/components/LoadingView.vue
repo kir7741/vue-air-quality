@@ -29,6 +29,7 @@ export default {
   top: 0;
   bottom: 0;
   background:rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
 .loading {
   border: 5px solid $primaryBlack;

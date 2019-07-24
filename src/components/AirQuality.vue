@@ -72,7 +72,7 @@
       <!-- 各區域指標數值開始 -->
       <section
         class="site row"
-        v-if="selectedList.length"
+        v-if="getFirstSite"
       >
         <div class="col-4 mb-15">
           <div class="combination">
@@ -172,12 +172,13 @@
           </ul>
         </div>
         <div class="col-8">
-          <div class="row">
+          <div class="row aqi-list">
 
             <div 
               class="col-6 mb-15"
               v-for="(aqi, index) in selectedList"
               :key="index"
+              @click="setFirstSite(aqi)"
             >
               <div class="combination">
                 <span>
@@ -210,6 +211,7 @@ export default {
     return {
       city: '',
       queryTime: '',
+      clickedAqi: null,
       selectedList: [],
       statusList: [
         {
@@ -253,7 +255,7 @@ export default {
       citySelects: 'getSelects'
     }),
     getFirstSite() {
-      return this.selectedList[0];
+      return this.clickedAqi || this.selectedList[0];
     }
   },
   methods: {
@@ -261,6 +263,8 @@ export default {
       getData: 'getAQIData'
     }),
     queryByCity(event) {
+
+      this.clickedAqi = null;
 
       const val = event.target.value;
 
@@ -270,6 +274,9 @@ export default {
                               return aqi.County === val;
                             });
 
+    },
+    setFirstSite(aqi) {
+      this.clickedAqi = aqi;
     }
   },
   mounted() {
@@ -398,13 +405,17 @@ export default {
   margin: 0;
   border: 3px solid $primaryBlack;
   border-top: none;
-  padding: 10px 20px;
+  padding: 15px 25px;
   list-style: none;
   li {
     display: flex;
     align-items: center;
     border-bottom: 1px solid $primaryBlack; 
     padding: 20px 0;
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
   .item-name {
     margin-right: 10px;
@@ -419,6 +430,9 @@ export default {
 }
 .mb-15 {
   margin-bottom: 15px;
+}
+.aqi-list .combination {
+  cursor: pointer;
 }
 @media all and (min-width: 767px) {
   .wrapper {
