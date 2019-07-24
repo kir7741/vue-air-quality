@@ -27,6 +27,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import './scss/_mixin.scss';
 * {
   box-sizing:border-box;
 }
@@ -54,6 +55,24 @@ body {
 .col-4, .col-6, .col-8 {
   flex: 0 0 100%;
   max-width: 100%;
+}
+.green {
+  background-color: $primaryGreen;
+}
+.yellow {
+  background-color: $primaryYellow;
+}
+.orange {
+  background-color: $primaryOrange;
+}
+.red {
+  background-color: $primaryRed;
+}
+.purple {
+  background-color: $primaryPurple;
+}
+.pink {
+  background-color: $primaryPink;
 }
 @media all and (min-width: 767px) {
   .col-4 {

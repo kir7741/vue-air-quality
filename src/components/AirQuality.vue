@@ -34,6 +34,7 @@
                 <th  
                   v-for="(item, index) in statusList"
                   :key="index"
+                  :class="getStatusClass(item.status)"
                 >
                   {{ item.lowerLimit }}~{{ item.upperLimit }}
                 </th>
@@ -79,7 +80,7 @@
             <span>
               {{ getFirstSite.SiteName }}
             </span>
-            <span>
+            <span :class="getStatusClass(getFirstSite.Status)">
               {{ getFirstSite.AQI  }}
             </span>
           </div>
@@ -184,7 +185,7 @@
                 <span>
                   {{ aqi.SiteName }}
                 </span>
-                <span>
+                <span :class="getStatusClass(aqi.Status)">
                   {{ aqi.AQI }}
                 </span>
               </div>
@@ -201,6 +202,9 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
+
+// Enums
+import AqiStatusType from '../enum/aqi-status-type.js';
 
 // Other libraries
 import * as moment from 'moment';
@@ -277,6 +281,24 @@ export default {
     },
     setFirstSite(aqi) {
       this.clickedAqi = aqi;
+    },
+    getStatusClass(status) {
+
+      switch (status) {
+        case AqiStatusType.GOOD:
+          return 'green';
+        case AqiStatusType.NORMAL:
+          return 'yellow';
+        case AqiStatusType.SENSITIVE_TO_UNHEALTHY:
+          return 'orange';
+        case AqiStatusType.SENSITIVE_TO_ALL:
+          return 'red';
+        case AqiStatusType.VERY_UNHEALTHY:
+          return 'purple';
+        case AqiStatusType.DANGER:
+          return 'pink';
+      }
+
     }
   },
   mounted() {
