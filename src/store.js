@@ -37,7 +37,7 @@ const store = new Vuex.Store({
 
       context.commit('toggleLoading', true);
 
-      const url = `${process.env.VUE_APP_AQI_URL}/webapi/Data/REWIQA/?format=json`;
+      const url = `${process.env.VUE_APP_AQI_URL}`;
 
       return new Promise((resolve, reject) => {
 
